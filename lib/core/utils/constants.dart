@@ -1,0 +1,1 @@
+const kBaseUrl = 'https://669ed91f9a1bda368007ba72.mockapi.io/test-api';
