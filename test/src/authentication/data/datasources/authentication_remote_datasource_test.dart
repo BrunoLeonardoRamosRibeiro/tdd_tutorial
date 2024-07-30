@@ -6,6 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:tdd_tutorial/core/errors/exceptions.dart';
 import 'package:tdd_tutorial/core/utils/constants.dart';
 import 'package:tdd_tutorial/src/authentication/data/datasources/authentication_remote_datasource.dart';
+import 'package:tdd_tutorial/src/authentication/data/models/user_model.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -41,7 +42,7 @@ void main() {
 
       verify(
         () => client.post(
-          Uri.parse('$kBaseUrl$kCreateUserEndpoint'),
+          Uri.https(kBaseUrl, kCreateUserEndpoint),
           body: jsonEncode({
             'createdAt': 'createdAt',
             'name': 'name',
@@ -76,8 +77,8 @@ void main() {
       );
 
       verify(
-            () => client.post(
-          Uri.parse('$kBaseUrl$kCreateUserEndpoint'),
+        () => client.post(
+          Uri.https(kBaseUrl, kCreateUserEndpoint),
           body: jsonEncode({
             'createdAt': 'createdAt',
             'name': 'name',
@@ -87,6 +88,57 @@ void main() {
       ).called(1);
 
       verifyNoMoreInteractions(client);
+    });
+  });
+
+  group('getUsers', () {
+    const tUsers = [UserModel.empty()];
+    const tMessage = 'Server down, Server down.';
+
+    test('Should return [List<User>] when the status code is 200', () async {
+      //
+      when(() => client.get(any())).thenAnswer(
+        (_) async => http.Response(jsonEncode([tUsers.first.toMap()]), 200),
+      );
+
+      final result = await remoteDatasource.getUsers();
+
+      expect(result, equals(tUsers));
+
+      verify(
+        () => client.get(
+          Uri.https(kBaseUrl, kGetUsersEndpoint),
+        ),
+      ).called(1);
+
+      verifyNoMoreInteractions(client);
+
+      //
+
+      //
+    });
+
+    test('Should throw [APIException] when the status code is not 200 ', () async {
+      //
+      when(() => client.get(any())).thenAnswer(
+        (_) async => http.Response(jsonEncode(tMessage), 500),
+      );
+
+      final methodCall = remoteDatasource.getUsers;
+
+      expect(() => methodCall(), throwsA(const APIException(message: tMessage, statusCode: 500)));
+
+      verify(
+        () => client.get(
+          Uri.https(kBaseUrl, kGetUsersEndpoint),
+        ),
+      ).called(1);
+
+      verifyNoMoreInteractions(client);
+
+      //
+
+      //
     });
   });
 }
