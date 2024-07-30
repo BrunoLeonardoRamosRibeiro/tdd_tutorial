@@ -1,4 +1,5 @@
-part of 'authentication_bloc.dart';
+
+import 'package:equatable/equatable.dart';
 
 sealed class AuthenticationEvent extends Equatable {
   const AuthenticationEvent();
