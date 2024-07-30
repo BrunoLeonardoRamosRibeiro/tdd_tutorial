@@ -28,20 +28,25 @@ class AuthRemoteDataSrcImpl implements AuthenticationRemoteDatasource {
     required String name,
     required String avatar,
   }) async {
-    final response = await _client.post(
-      Uri.parse('$kBaseUrl$kCreateUserEndpoint'),
-      body: jsonEncode({
-        'createdAt': createdAt,
-        'name': name,
-        'avatar': avatar,
-      }),
-    );
+    try {
+      final response = await _client.post(
+        Uri.parse('$kBaseUrl$kCreateUserEndpoint'),
+        body: jsonEncode({
+          'createdAt': createdAt,
+          'name': name,
+          'avatar': avatar,
+        }),
+      );
 
-    if (response.statusCode != 200 && response.statusCode != 201 ){
-      throw APIException(message: response.body, statusCode: response.statusCode);
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw APIException(message: response.body, statusCode: response.statusCode);
+      }
+    } on APIException {
+      rethrow;
     }
-
-
+    catch (e) {
+      throw APIException(message: e.toString(), statusCode: 505);
+    }
   }
 
   @override
