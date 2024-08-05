@@ -9,7 +9,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required GetUsers getUsers,
   })  : _createUser = createUser,
         _getUsers = getUsers,
-        super(AuthenticationInitial());
+        super(const AuthenticationInitial());
 
   final CreateUser _createUser;
   final GetUsers _getUsers;

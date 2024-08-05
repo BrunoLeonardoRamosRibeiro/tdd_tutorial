@@ -1,4 +1,5 @@
-import 'package:bloc/bloc.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tdd_tutorial/src/authentication/domain/usecases/create_user.dart';
 import 'package:tdd_tutorial/src/authentication/domain/usecases/get_users.dart';
 import 'package:tdd_tutorial/src/authentication/presentation/bloc/authentication_state.dart';
@@ -12,7 +13,7 @@ class AuthenticationBloc
     required GetUsers getUsers,
   }) : _createUser = createUser,
         _getUsers = getUsers,
-        super(AuthenticationInitial()) {
+        super(const AuthenticationInitial()) {
     on<CreateUserEvent>(_createUserHandler);
     on<GetUsersEvent>(_getUsersHandler);
   }
